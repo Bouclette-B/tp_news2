@@ -5,11 +5,15 @@ abstract class Application
     protected $name;
     protected $HTTPRequest;
     protected $HTTPResponse;
+    protected $user;
+    protected $config;
 
     public function __construct($app){
         $this->HTTPRequest = new HTTPRequest($app);
         $this->HTTPResponse = new HTTPResponse($app);
         $this->name = '';
+        $this->user = new User($app);
+        $this->confing = new Config($app);
     }
 
     abstract public function run();
