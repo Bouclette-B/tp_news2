@@ -68,4 +68,8 @@ abstract class Application
     {
         return $this->HTTPResponse;
     }
+
+    public function getUser() {
+        return $this->user;
+    }
 }
