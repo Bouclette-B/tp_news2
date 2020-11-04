@@ -4,9 +4,9 @@ namespace App\FrontOffice;
 use \OCFram\Application;
 
 class FrontOfficeApp extends Application{
-    public function __construct($app)
+    public function __construct()
     {
-        parent::__construct($app);
+        parent::__construct();
         $this->name = 'FrontOffice';
     }
 

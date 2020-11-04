@@ -8,12 +8,12 @@ abstract class Application
     protected $user;
     protected $config;
 
-    public function __construct($app){
-        $this->HTTPRequest = new HTTPRequest($app);
-        $this->HTTPResponse = new HTTPResponse($app);
+    public function __construct(){
+        $this->HTTPRequest = new HTTPRequest($this);
+        $this->HTTPResponse = new HTTPResponse($this);
         $this->name = '';
-        $this->user = new User($app);
-        $this->confing = new Config($app);
+        $this->user = new User($this);
+        $this->config = new Config($this);
     }
 
     abstract public function run();
@@ -50,8 +50,8 @@ abstract class Application
 
         $_GET = array_merge($_GET, $matchedRoute->getVars());
 
-        $controllerClass = 'App\\'.$this->name.'\\Modules\\'.$matchedRoute->module().'\\'.$matchedRoute->module().'Controller';
-        return new $controllerClass($this, $matchedRoute->module(), $matchedRoute->action());
+        $controllerClass = 'App\\'.$this->name.'\\Modules\\'.$matchedRoute->getModule().'\\'.$matchedRoute->getModule().'Controller';
+        return new $controllerClass($this, $matchedRoute->getModule(), $matchedRoute->getAction());
     }
 
     public function getName()
@@ -71,5 +71,9 @@ abstract class Application
 
     public function getUser() {
         return $this->user;
+    }
+
+    public function getConfig() {
+        return $this->config;
     }
 }
