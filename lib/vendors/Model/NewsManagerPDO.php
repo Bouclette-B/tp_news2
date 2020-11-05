@@ -30,7 +30,7 @@ class NewsManagerPDO extends NewsManager {
         $request = $this->dao->prepare('SELECT * FROM news ORDER BY id DESC LIMIT :limit');
         $request->bindValue(':limit', $limit, PDO::PARAM_INT);
         $request->execute();
-        $newsList = $request->fetchAll(PDO::FETCH_CLASS, News::class);
+        $newsList = $request->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, News::class);
         foreach($newsList as $news) {
             $news->setCreationDate(new DateTime($news->getCreationDate()));
             if($news->getUpdateDate()) {

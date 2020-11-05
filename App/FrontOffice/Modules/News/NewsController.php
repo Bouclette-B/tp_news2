@@ -9,7 +9,7 @@ class NewsController extends BackController {
     public function executeIndex(HTTPRequest $request) {
         //récupérer les infos du fichier de config
         $newsLimit = $this->app->getConfig()->getVar('news_limit');
-        $excerptLimit = $this->app->getConfig()->getVar('excerpt_limit');
+        $excerptLimit = (int) $this->app->getConfig()->getVar('excerpt_limit');
 
         // ajoute une variable pour le titre
         $this->page->addVar('title', "Liste des {$newsLimit} dernières news");
@@ -23,11 +23,11 @@ class NewsController extends BackController {
 
         //tronquer le contenu à 200 caractères
         foreach ($newsList as $news) {
-            $newsLength = strlen($news['content']);
+            $newsLength = strlen(strip_tags($news->getContent()));
             if ($newsLength > $excerptLimit) {
-                $newsExcerpt = wordwrap($news['content'], ($excerptLimit - 1));
-                $newsExcerpt = explode("\\n", $newsExcerpt);
-                $news['content'] = $newsExcerpt[0] . "...";
+                $newsExcerpt = substr($news->getContent(), 0, $excerptLimit);
+                $newsExcerpt = substr($newsExcerpt, 0, strrpos($newsExcerpt, ' ')). '...';
+                $news->setContent($newsExcerpt);
             }
         }
 

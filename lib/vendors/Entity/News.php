@@ -83,7 +83,7 @@ class News extends Entity {
         if (!is_string($content) || empty($content)) {
             $this->erreurs[] = self::INVALID_CONTENT;
         }
-        $this->title = $content;
+        $this->content = $content;
     }
 
     public function setCreationDAte(\DateTime $creationDate) {
