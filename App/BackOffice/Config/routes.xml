@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<routes>
+    <route url="/admin/" module="News" action="index" />
+    <route url="/admin/addNews" module="News" action="addNews" />
+    <route url="/admin/updateNews" module="News" action="updateNews" />
+    <route url="/admin/deleteNews" module="News" action="deleteNews" />
+</routes>

@@ -26,10 +26,8 @@ class NewsManagerPDO extends NewsManager {
         $request->execute();
     }
 
-    public function getNewsList(int $limit) {
-        $request = $this->dao->prepare('SELECT * FROM news ORDER BY id DESC LIMIT :limit');
-        $request->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $request->execute();
+    public function getNewsList($limit = null) {
+        $request = $this->dao->query('SELECT * FROM news ORDER BY id DESC' . $limit);
         $newsList = $request->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, News::class);
         foreach($newsList as $news) {
             $news->setCreationDate(new DateTime($news->getCreationDate()));
@@ -56,5 +54,7 @@ class NewsManagerPDO extends NewsManager {
         return $news;
     }
 
-
+    public function count() {
+        return $this->dao->query('SELECT COUNT(*) FROM news')->fetchColumn();
+    }
 }
