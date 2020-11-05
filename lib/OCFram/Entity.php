@@ -14,6 +14,16 @@ abstract class Entity implements \ArrayAccess {
         }
     }
 
+    public function isNew() {
+        return empty($this->id);
+    }
+
+    // GETTERS
+
+    public function getErrors() {
+        return $this->errors;
+    }
+
     public function getID() {
         return $this->id;
     }

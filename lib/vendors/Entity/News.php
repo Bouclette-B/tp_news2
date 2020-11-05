@@ -67,21 +67,21 @@ class News extends Entity {
 
     public function setAuthor($author) {
         if (!is_string($author) || empty($author)) {
-            $this->erreurs[] = self::INVALID_AUTHOR;
+            $this->errors[] = self::INVALID_AUTHOR;
         }
         $this->author = $author;
     }
 
     public function setTitle($title) {
         if (!is_string($title) || empty($title)) {
-            $this->erreurs[] = self::INVALID_TITLE;
+            $this->errors[] = self::INVALID_TITLE;
         }
         $this->title = $title;
     }
 
     public function setContent($content) {
         if (!is_string($content) || empty($content)) {
-            $this->erreurs[] = self::INVALID_CONTENT;
+            $this->errors[] = self::INVALID_CONTENT;
         }
         $this->content = $content;
     }

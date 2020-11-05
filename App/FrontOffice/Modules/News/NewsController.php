@@ -1,6 +1,7 @@
 <?php
 namespace App\FrontOffice\Modules\News;
 
+use Entity\Comment;
 use OCFram\BackController;
 use OCFram\HTTPRequest;
 
@@ -35,16 +36,46 @@ class NewsController extends BackController {
     }
 
     public function executeShow(HTTPRequest $request) {
-        $manager = $this->managers->getManagerOf('News');
-        $id = $request->isGetData('id');
-        $news = $manager->getNews($id);
-        
+        $newsManager = $this->managers->getManagerOf('News');
+        $id = $request->getGetData('id');
+        $news = $newsManager->getNews($id);
+
+        $commentsManager = $this->managers->getManagerOf('Comments');
+        $comments = $commentsManager->getCommentsList($id);
+
         if(empty($news)){
             $this->app->getHTTPResponse()->redirect404();
         } 
 
         $this->page->addVar('title', $news->getTitle());
         $this->page->addVar('news', $news);
+        $this->page->addVar('comments', $comments);
+    }
+
+    public function executeAddComment(HTTPRequest $request) {
+        $pseudo = htmlspecialchars($request->isPostData('pseudo'));
+        $newsID = $request->getGetData('newsID');
+        if($pseudo) {
+            $comment = new Comment([
+                'news' => $newsID,
+                'author' => $request->getPostData('pseudo'),
+                'content' => $request->getPostData('content')
+            ]);
+        
+        // vérification des données
+            if($comment->isValid()){
+                $manager = $this->managers->getManagerOf('Comments');
+                $manager->saveComment($comment);
+                $user = $this->app->getUser();
+                $user->setFlash('Le commentaire a bien été ajouté, merci mon lapin !');
+                $HTTPResponse = $this->app->getHTTPResponse();
+                $HTTPResponse->redirectPage("news-{$newsID}.html");    
+            } else {
+                $this->page->addVar('errors', $comment->getErrors());
+            }
+        $this->page->addVar('title', 'Ajouter un commentaire');
+        $this->page->addVar('comment', $comment);
+        }
     }
 }
 

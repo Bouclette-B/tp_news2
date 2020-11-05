@@ -11,24 +11,25 @@ class HTTPRequest extends ApplicationComponent {
         return isset($_COOKIE[$key]);
     }
     
-    public function isGetData($key) {
-        return isset($_GET[$key]) ? $_GET[$key] : null;
+    public function isGetData($key) : bool {
+        return isset($_GET[$key]);
     }
 
-    public function doesGetExist($key) {
-        return isset($_GET[$key]);
+    public function getGetData($key) {
+        return isset($_GET[$key]) ? $_GET[$key] : null;
+
     }
 
     public function checkMethod() {
         return $_SERVER['REQUEST-METHOD'];
     }
 
-    public function isPostData($key) {
-        return isset($_POST[$key]) ? $_POST[$key] : null;
+    public function isPostData($key) : bool {
+        return isset($_POST[$key]);
     }
 
-    public function doesPostExist($key) : bool {
-        return isset($_POST[$key]);
+    public function getPostData($key)  {
+        return isset($_POST[$key]) ? $_POST[$key] : null;
     }
 
     public function getURI()
