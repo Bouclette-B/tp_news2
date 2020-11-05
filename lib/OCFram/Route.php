@@ -24,13 +24,9 @@ class Route
 
     public function match(string $url)
     {
-        //if(preg_match('`^'.$this->url.'$`', $url, $matches))
-        if($this->url === $url)
-        {
-            //return $matches;
-            return true;
-        }
-        else{
+        if(preg_match('`^'.$this->url.'$`', $url, $matches)) {
+            return $matches;
+        } else {
             return false;
         }
     }

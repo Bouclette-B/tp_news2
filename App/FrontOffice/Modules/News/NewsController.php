@@ -18,7 +18,6 @@ class NewsController extends BackController {
         $manager = $this->managers->getManagerOf('News');
 
         // récupère les 5 dernières news
-        
         $newsList = $manager->getNewsList($newsLimit);
 
         //tronquer le contenu à 200 caractères
@@ -34,12 +33,18 @@ class NewsController extends BackController {
         // passer les news tronquées à la view
         $this->page->addVar('newsList', $newsList);
     }
+
+    public function executeShow(HTTPRequest $request) {
+        $manager = $this->managers->getManagerOf('News');
+        $id = $request->isGetData('id');
+        $news = $manager->getNews($id);
+        
+        if(empty($news)){
+            $this->app->getHTTPResponse()->redirect404();
+        } 
+
+        $this->page->addVar('title', $news->getTitle());
+        $this->page->addVar('news', $news);
+    }
 }
 
-// $db = DBFactory::getMysqlConnectionWithPDO();
-// $newsManagerPDO = new NewsManagerPDO($db);
-// $newsList = $newsManagerPDO->getNewsList('LIMIT 5');
-// $viewData = [
-//     'newsList' => $newsList,
-// ];
-// $this->render('homeView', $viewData);

@@ -40,4 +40,21 @@ class NewsManagerPDO extends NewsManager {
         return $newsList;
     }
 
+    public function getNews($id)
+    {
+        $request = $this->dao->prepare('SELECT * FROM news WHERE id = :id');
+        $request->bindValue(':id', $id, PDO::PARAM_INT);
+        $request->execute();
+        $news = $request->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, News::class);
+        $news = $news[0];
+        $news->setCreationDate(new DateTime($news->getCreationDate()));
+        if($news->getUpdateDate())
+        {
+            $news->setUpdateDate(new DateTime($news->getUpdateDate()));
+        }
+
+        return $news;
+    }
+
+
 }
