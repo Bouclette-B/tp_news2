@@ -8,10 +8,12 @@ abstract class BackController extends ApplicationComponent
     protected $module ='';
     protected $action ='';
     protected $page = null;
+    protected $managers = null;
 
     public function __construct(Application $app, string $module, string $action)
     {
         parent::__construct($app);
+        $this->managers = new Managers('PDO', PDOFactory::getMySQLConnection());
         $this->page = new Page ($app);
         $this->setModule($module);
         $this->setAction($action);
@@ -36,7 +38,7 @@ abstract class BackController extends ApplicationComponent
             throw new \InvalidArgumentException('La vue doit être une chaîne de caractères valide');
         }
         $this->view = $view;
-        $this->page->setContentFile(__DIR__.'../../App'.$this->app->getName().'/Modules/'.$this->module.'/Views/'.$this->view.'.php');
+        $this->page->setContentFile(__DIR__.'/../../App/'.$this->app->getName().'/Modules/'.$this->module.'/Views/'.$this->view.'.php'); 
     }
 
     public function setAction(string $action) {

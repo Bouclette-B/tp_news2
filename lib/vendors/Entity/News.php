@@ -1,9 +1,10 @@
 <?php
 namespace Entity;
 
+use OCFram\Entity;
+
 class News extends Entity {
     protected $author;
-    // protected $id;
     protected $title;
     protected $content;
     protected $creationDate;
@@ -18,16 +19,7 @@ class News extends Entity {
             $this->hydrate($data);
         }
     }
-    
-    public function hydrate(array $data) {
-        foreach ($data as $key => $value) {
-            $method = 'set' . ucfirst($key);
-            if (method_exists($this, $method)) {
-                $this->$method($value);
-            }
-        }
-    }
-    
+        
     public function isValide() : bool {
         return !(empty($this->author) || empty($this->title) || empty($this->content));
     }

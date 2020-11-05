@@ -1,12 +1,12 @@
 <?php
 namespace App\FrontOffice\Modules\News;
 
-use Model\NewsManagerPDO;
 use OCFram\BackController;
+use OCFram\HTTPRequest;
 
 class NewsController extends BackController {
 
-    public function executeIndex() {
+    public function executeIndex(HTTPRequest $request) {
         //récupérer les infos du fichier de config
         $newsLimit = $this->app->getConfig()->getVar('news_limit');
         $excerptLimit = $this->app->getConfig()->getVar('excerpt_limit');
@@ -15,11 +15,11 @@ class NewsController extends BackController {
         $this->page->addVar('title', "Liste des {$newsLimit} dernières news");
 
         // récupère le manager
-        $this->managers->getManagersOf('News');
+        $manager = $this->managers->getManagerOf('News');
 
         // récupère les 5 dernières news
         
-        $newsList = $this->manager->getNewsList($newsLimit);
+        $newsList = $manager->getNewsList($newsLimit);
 
         //tronquer le contenu à 200 caractères
         foreach ($newsList as $news) {

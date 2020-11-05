@@ -25,19 +25,15 @@ class Page extends ApplicationComponent {
         $content = ob_get_clean();
 
         ob_start();
-        require __DIR__.'/../.App/'.$this->app->getName().'/templates/layout.php';
-        require('../Application/template.php');
+        require __DIR__.'/../../App/'.$this->app->getName().'/Templates/layout.php';
         return ob_get_clean();
     }
 
-    public function setFileContent($contentFile){
+    public function setContentFile($contentFile){
         if(!is_string($contentFile) || empty($contentFile)){
             throw new \InvalidArgumentException('La vue est invalide');
         }
         $this->contentFile = $contentFile;
     }
 
-    public function setContentFile(){
-
-    }
 }
