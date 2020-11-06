@@ -3,7 +3,10 @@ namespace App\FrontOffice\Modules\News;
 
 use Entity\Comment;
 use OCFram\BackController;
+use OCFram\Form;
 use OCFram\HTTPRequest;
+use OCFram\StringField;
+use OCFram\TextField;
 
 class NewsController extends BackController {
 
@@ -49,29 +52,45 @@ class NewsController extends BackController {
     }
 
     public function executeAddComment(HTTPRequest $request) {
-        $pseudo = htmlspecialchars($request->isPostData('pseudo'));
         $newsID = $request->getGetData('newsID');
-        if($pseudo) {
+        if($request->checkMethod() === 'POST') {
             $comment = new Comment([
                 'news' => $newsID,
                 'author' => $request->getPostData('pseudo'),
                 'content' => $request->getPostData('content')
             ]);
         
-        // vérification des données
-            if($comment->isValid()){
-                $manager = $this->managers->getManagerOf('Comments');
-                $manager->saveComment($comment);
-                $user = $this->app->getUser();
-                $user->setFlash('Le commentaire a bien été ajouté, merci mon lapin !');
-                $HTTPResponse = $this->app->getHTTPResponse();
-                $HTTPResponse->redirectPage("news-{$newsID}.html");    
-            } else {
-                $this->page->addVar('errors', $comment->getErrors());
-            }
-        $this->page->addVar('title', 'Ajouter un commentaire');
-        $this->page->addVar('comment', $comment);
+        } else {
+            $comment = new Comment();
         }
-    }
+
+        $form = new Form($comment);
+
+        $form->addField(new StringField([
+            'label' => 'Auteur',
+            'name' => 'author',
+            'maxLength' => 50
+        ]));
+
+        $form->addField(new TextField([
+            'label' => 'Contenu',
+            'name' => 'content',
+            'rows' => 7,
+            'cols' => 50
+        ]));
+
+        if($form->isValid()) {
+            $manager = $this->managers->getManagerOf('Comments');
+            $manager->saveComment($comment);
+            $user = $this->app->getUser();
+            $user->setFlash('Le commentaire a bien été ajouté, merci mon lapin !');
+            $HTTPResponse = $this->app->getHTTPResponse();
+            $HTTPResponse->redirectPage("news-{$newsID}.html");    
+        }
+
+        $this->page->addVar('comment', $comment);
+        $this->page->addVar('form', $form->createView());
+        $this->page->addVar('title', 'Ajouter un commentaire');
+        }
 }
 
