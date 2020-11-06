@@ -14,20 +14,21 @@ class NewsManagerPDO extends NewsManager {
         $request->execute();
     }
 
-    public function deleteNews(News $news) {
-        $this->dao->query("DELETE FROM news WHERE id =" . $news->getId());
+    public function deleteNews($id) {
+        $this->dao->query("DELETE FROM news WHERE id =" . (int)$id);
     }
 
-    public function updateNews(array $news) {
-        $request = $this->dao->prepare('UPDATE news SET author = :author, title = :title, content = :content, updateDate = NOW() WHERE id=' .$news['id']);
-        $request->bindValue(':author', $news['author']);
-        $request->bindValue(':title', $news['title']);
-        $request->bindValue(':content', $news['content']);
+    public function updateNews(News $news) {
+        $request = $this->dao->prepare('UPDATE news SET author = :author, title = :title, content = :content, updateDate = NOW() WHERE id= :id');
+        $request->bindValue(':author', $news->getAuthor());
+        $request->bindValue(':title', $news->getTitle());
+        $request->bindValue(':content', $news->getContent());
+        $request->bindValue(':id', $news->getID(PDO::PARAM_INT));
         $request->execute();
     }
 
     public function getNewsList($limit = null) {
-        $request = $this->dao->query('SELECT * FROM news ORDER BY id DESC' . $limit);
+        $request = $this->dao->query('SELECT * FROM news ORDER BY id DESC ' . $limit);
         $newsList = $request->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, News::class);
         foreach($newsList as $news) {
             $news->setCreationDate(new DateTime($news->getCreationDate()));

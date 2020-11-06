@@ -17,8 +17,8 @@
             <ul>
                 <li><a href="/">Accueil</a></li>
                 <?php if ($user->isUserAuthenticated()) { ?>
-                <li><a href="/admin">Admin</a></li>
-                <li><a href="/admin/news-insert.html"></a>Ajouter une news</li>
+                <li><a href="/admin/">Admin</a></li>
+                <li><a href="/admin/add-news.html"></a>Ajouter une news</li>
             <?php } ?>
             </ul>
         </nav>

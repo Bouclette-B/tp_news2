@@ -20,7 +20,7 @@ class News extends Entity {
         }
     }
         
-    public function isValide() : bool {
+    public function isValid() : bool {
         return !(empty($this->author) || empty($this->title) || empty($this->content));
     }
     // public function __set($attribut, $value)
@@ -33,7 +33,7 @@ class News extends Entity {
 
     // GETTERS
 
-    public function getId() {
+    public function getID() {
         return $this->id;
     }
 
