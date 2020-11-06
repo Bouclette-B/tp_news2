@@ -8,20 +8,15 @@ use OCFram\HTTPRequest;
 class NewsController extends BackController {
 
     public function executeIndex(HTTPRequest $request) {
-        //récupérer les infos du fichier de config
         $newsLimit = $this->app->getConfig()->getVar('news_limit');
         $excerptLimit = (int) $this->app->getConfig()->getVar('excerpt_limit');
 
-        // ajoute une variable pour le titre
         $this->page->addVar('title', "Liste des {$newsLimit} dernières news");
 
-        // récupère le manager
         $manager = $this->managers->getManagerOf('News');
 
-        // récupère les 5 dernières news
         $newsList = $manager->getNewsList($newsLimit);
 
-        //tronquer le contenu à 200 caractères
         foreach ($newsList as $news) {
             $newsLength = strlen(strip_tags($news->getContent()));
             if ($newsLength > $excerptLimit) {
@@ -31,7 +26,6 @@ class NewsController extends BackController {
             }
         }
 
-        // passer les news tronquées à la view
         $this->page->addVar('newsList', $newsList);
     }
 
@@ -39,6 +33,7 @@ class NewsController extends BackController {
         $newsManager = $this->managers->getManagerOf('News');
         $id = $request->getGetData('id');
         $news = $newsManager->getNews($id);
+        $user = $this->app->getUser();
 
         $commentsManager = $this->managers->getManagerOf('Comments');
         $comments = $commentsManager->getCommentsList($id);
@@ -50,6 +45,7 @@ class NewsController extends BackController {
         $this->page->addVar('title', $news->getTitle());
         $this->page->addVar('news', $news);
         $this->page->addVar('comments', $comments);
+        $this->page->addVar('user', $user);
     }
 
     public function executeAddComment(HTTPRequest $request) {

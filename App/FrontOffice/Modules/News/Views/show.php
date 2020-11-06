@@ -21,6 +21,11 @@ foreach ($comments as $comment) {
     <fieldset>
     <legend>
       Posté par <strong><?= htmlspecialchars($comment->getAuthor()) ?></strong> le <?= $comment->getDate()->format('d/m/Y à H\hi') ?>
+      <?php 
+      if ($user->isUserAuthenticated()) { ?> 
+        - <a href="admin/modify-comment-<?= $comment->getID() ?>.html">Modifier</a> |
+        <a href="admin/delete-comment-<?= $comment->getID() ?>.html">Supprimer</a>
+      <?php } ?>
     </legend>
     <p><?= nl2br(htmlspecialchars($comment->getContent())) ?></p>
   </fieldset>

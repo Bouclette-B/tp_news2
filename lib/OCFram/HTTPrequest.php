@@ -21,7 +21,7 @@ class HTTPRequest extends ApplicationComponent {
     }
 
     public function checkMethod() {
-        return $_SERVER['REQUEST-METHOD'];
+        return $_SERVER['REQUEST_METHOD'];
     }
 
     public function isPostData($key) : bool {

@@ -39,8 +39,7 @@ class NewsManagerPDO extends NewsManager {
         return $newsList;
     }
 
-    public function getNews($id)
-    {
+    public function getNews($id) {
         $request = $this->dao->prepare('SELECT * FROM news WHERE id = :id');
         $request->bindValue(':id', $id, PDO::PARAM_INT);
         $request->execute();

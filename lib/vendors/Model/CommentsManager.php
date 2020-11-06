@@ -5,12 +5,12 @@ use Entity\Comment;
 use OCFram\Manager;
 
 abstract class CommentsManager extends Manager {
-    abstract public function addComments(Comment $comment);
-    abstract public function modifyComments(Comment $comments);
+    abstract public function addComment(Comment $comment);
+    abstract public function modifyComment(Comment $comments);
 
     public function saveComment(Comment $comment){
         if($comment->isValid()) {
-            $comment->isNew() ? $this->addComments($comment) : $this->modifyComment();
+            $comment->isNew() ? $this->addComment($comment) : $this->modifyComment($comment);
         }
         else {
             throw new \RuntimeException('Le commentaire doit être valide pour être enregistré (auteur & contenu)');
@@ -18,4 +18,7 @@ abstract class CommentsManager extends Manager {
     }
 
     abstract public function getCommentsList($newsID);
+    abstract public function getComment($id);
+    abstract public function deleteComment($id);
+    abstract public function deleteFromNews($newsID);
 }
