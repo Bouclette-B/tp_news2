@@ -9,7 +9,7 @@ abstract class Validator {
             $this->setErrorMsg($errorMsg);
     }
 
-    abstract public function isValid($value) : bool;
+    abstract public function isValid($value);
 
     public function getErrorMsg(){
         return $this->errorMsg;

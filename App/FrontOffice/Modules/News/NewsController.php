@@ -2,6 +2,7 @@
 namespace App\FrontOffice\Modules\News;
 
 use Entity\Comment;
+use FormBuilder\CommentFormBuilder;
 use OCFram\BackController;
 use OCFram\Form;
 use OCFram\HTTPRequest;
@@ -64,24 +65,13 @@ class NewsController extends BackController {
             $comment = new Comment();
         }
 
-        $form = new Form($comment);
+        $formBuilder = new CommentFormBuilder($comment);
+        $formBuilder->build();
+        $form = $formBuilder->getForm();
 
-        $form->addField(new StringField([
-            'label' => 'Auteur',
-            'name' => 'author',
-            'maxLength' => 50
-        ]));
-
-        $form->addField(new TextField([
-            'label' => 'Contenu',
-            'name' => 'content',
-            'rows' => 7,
-            'cols' => 50
-        ]));
-
-        if($form->isValid()) {
+        if($request->checkMethod() === 'POST' && $form->isValid()) {
             $manager = $this->managers->getManagerOf('Comments');
-            $manager->saveComment($comment);
+            $manager->save($comment);
             $user = $this->app->getUser();
             $user->setFlash('Le commentaire a bien été ajouté, merci mon lapin !');
             $HTTPResponse = $this->app->getHTTPResponse();

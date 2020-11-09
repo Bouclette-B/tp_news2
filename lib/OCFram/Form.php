@@ -10,8 +10,9 @@ class Form {
     }
 
     public function addField(Field $field) {
-        $attribute = $field->getName();
-        $field->setValue($this->entity->getAttribute());
+        $attribute = ucfirst($field->getName());
+        $methodName = "get{$attribute}";
+        $field->setValue($this->entity->$methodName());
         $this->fields[] = $field;
         return $this;
     }
@@ -19,7 +20,7 @@ class Form {
     public function createView() : string {
         $view ='';
         foreach($this->fields as $field) {
-            $view .= $field->buildWidget().'>br />';
+            $view .= $field->buildWidget().'<br />';
         }
         return $view;
     }

@@ -7,12 +7,12 @@ class TextField extends Field {
 
     public function buildWidget(): string
     {
-        $widget = '.';
+        $widget = '';
         if(!empty($this->errorMsg)) {
             $widget .= $this->errorMsg . '<br />';
         }
 
-        $widget .= '<label>' . $this->getLabel . '</label><textarea name="' . $this->name . '"';
+        $widget .= '<label>' . $this->label . '</label><textarea name="' . $this->name . '"';
         
         if(!empty($this->cols)) {
             $widget.= ' cols="' . $this->cols . '"';

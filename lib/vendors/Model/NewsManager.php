@@ -6,7 +6,7 @@ use OCFram\Manager;
 abstract class NewsManager extends Manager {
     abstract public function addNews(News $news);
     abstract public function updateNews(News $news);
-    public function saveNews(News $news) {
+    public function save(News $news) {
         if($news->isValid()) {
             $news->isNew() ? $this->addNews($news) : $this->updateNews($news);
         } else {

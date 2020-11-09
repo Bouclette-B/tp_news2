@@ -20,6 +20,9 @@ $modelLoader->register();
 $entityLoader = new SplClassLoader('Entity', __DIR__.'/../lib/vendors');
 $entityLoader->register();
 
+$formBuilderLoader = new SplClassLoader('FormBuilder', __DIR__.'/../lib/vendors');
+$formBuilderLoader->register();
+
 $appClass = 'App\\'.$_GET['app'].'\\'.$_GET['app'].'App';
 
 $app = new $appClass;

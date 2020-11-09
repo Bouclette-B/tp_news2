@@ -5,12 +5,12 @@ class StringField extends Field {
     protected $maxLength;
 
     public function buildWidget(): string {
-        $widget = ".";
+        $widget = "";
         if(!empty($this->errorMsg)) {
             $widget .= $this->errorMsg . '<br />';
         }
 
-        $widget .= '<label>' . $this->getLabel . '</label><input type="text" name="' . $this->name . '"';
+        $widget .= '<label>' . $this->label . '</label><input type="text" name="' . $this->name . '"';
 
         if(!empty($this->value)) {
             $widget.= ' value="' . htmlspecialchars($this->value). '"';

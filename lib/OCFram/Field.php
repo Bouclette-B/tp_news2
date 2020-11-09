@@ -8,6 +8,7 @@ abstract class Field {
     protected $label;
     protected $name;
     protected $value;
+    protected $validators =[];
 
     public function __construct(array $options = []) {
         if(!empty($options)) {
@@ -19,7 +20,13 @@ abstract class Field {
 
 
     public function isValid() : bool {
-        return !(empty($this->label) || empty($this->name) || empty($this->value));
+        foreach ($this->validators as $validator) {
+            if(!$validator->isValid($this->value)){
+                $this->errorMsg = $validator->getErrorMsg();
+                return false;
+            }
+            return true;
+        }
     }
 
     // GETTERS
@@ -34,6 +41,10 @@ abstract class Field {
 
     public function getValue() : string {
         return $this->value;
+    }
+
+    public function getValidators() {
+        return $this->validators;
     }
 
     // SETTERS
@@ -52,14 +63,19 @@ abstract class Field {
         $this->name = $name;
     }
 
-    public function set($value) {
-        if(!is_string($value)) {
-            throw new \InvalidArgumentException('La valeur doit être une chaîne de caractère valide');
+    public function setValue($value) {
+        if(is_string($value)) {
+            $this->value = $value;
         }
-        $this->value = $value;
     }
 
-
-
+    public function setValidators(array $validators){
+        $this->validators = $validators;
+        foreach($validators as $validator) {
+            if($validator instanceof Validator && !in_array($validator, $this->validators)) {
+                $this->validators[] = $validator;
+            }
+        }
+    }
 
 }

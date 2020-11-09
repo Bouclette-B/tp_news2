@@ -8,7 +8,7 @@ abstract class CommentsManager extends Manager {
     abstract public function addComment(Comment $comment);
     abstract public function modifyComment(Comment $comments);
 
-    public function saveComment(Comment $comment){
+    public function save(Comment $comment){
         if($comment->isValid()) {
             $comment->isNew() ? $this->addComment($comment) : $this->modifyComment($comment);
         }

@@ -26,7 +26,6 @@ class CommentsManagerPDO extends CommentsManager {
         return $commentsList;
     }
 
-    // methode à implémenter !
     public function modifyComment(Comment $comment) {
         $request = $this->dao->prepare('UPDATE comments SET author = :author, content = :content WHERE id= :id');
         $request->bindValue(':author', $comment->getAuthor());

@@ -3,7 +3,10 @@ namespace App\BackOffice\Modules\News;
 
 use Entity\Comment;
 use Entity\News;
+use FormBuilder\CommentFormBuilder;
+use FormBuilder\NewsFormBuilder;
 use OCFram\BackController;
+use OCFram\FormHandler;
 use OCFram\HTTPRequest;
 
 class NewsController extends BackController {
@@ -18,20 +21,12 @@ class NewsController extends BackController {
     }
 
     public function executeAddNews(HTTPRequest $request) {
-        if($request->isPostData('author')) {
-            $this->checkForm($request);
-        }
+        $this->checkForm($request);
         $this->page->addVar('title', 'Ajout d\'une news');
     }
 
     public function executeUpdateNews(HTTPRequest $request) {
-        if($request->isPostData('author')) {
-            $this->checkForm($request);
-        } else {
-            $manager = $this->managers->getManagerOf('News');
-            $news = $manager->getNews($request->getGetData('id'));
-            $this->page->addVar('news', $news);
-        }
+        $this->checkForm($request);
         $this->page->addVar('title', 'Modification d\'une news');
     }
 
@@ -49,29 +44,33 @@ class NewsController extends BackController {
 
     public function executeModifyComment(HTTPRequest $request) {
         $manager = $this->managers->getManagerOf('Comments');
+        $this->page->addVar('title', 'Modification d\un commentaire');
         if($request->checkMethod() === 'POST') {
             $comment = new Comment([
                 'news' => $request->getPostData('news'),
                 'author' => $request->getPostData('pseudo'),
                 'content' =>$request->getPostData('content'),
                 'id' =>$request->getGetData('id'),
-            ]);
-        
-            if($comment->isValid()) {
-                $manager->saveComment($comment);
-                $user = $this->app->getUser();
-                $user->setFlash("Le commentaire #{$comment->getID()} a bien été modifié !");
-                $HTTPResponse = $this->app->getHTTPResponse();
-                $HTTPResponse->redirectPage("/news-{$request->getPostData('news')}.html");
+                ]);
             } else {
-                $this->page->addVar('errors', $comment->getErrors());
+                $comment = $manager->getComment($request->getGetData('id'));
             }
+            
+            $formbuilder = new CommentFormBuilder($comment);
+            $formbuilder->build();
+            
+            $form = $formbuilder->getForm();
+            $formHandler = new FormHandler($form, $manager, $request);
+            
+        if($formHandler->processForm($form)) {
+            $manager->save($comment);
+            $user = $this->app->getUser();
+            $user->setFlash("Le commentaire #{$comment->getID()} a bien été modifié !");
+            $HTTPResponse = $this->app->getHTTPResponse();
+            $HTTPResponse->redirectPage("/news-{$request->getPostData('news')}.html");
+        } 
         
-        } else {
-            $comment = $manager->getComment($request->getGetData('id'));
-        }
         $this->page->addVar('comment', $comment);
-        $this->page->addVar('title', 'Modification d\un commentaire');
     }
 
     public function executeDeleteComment(HTTPRequest $request) {
@@ -85,26 +84,40 @@ class NewsController extends BackController {
     }
 
     public function checkForm(HTTPRequest $request) {
-        $news = new News([
-            'author' => $request->getPostData('author'),
-            'title' => $request->getPostData('title'),
-            'content' => $request->getPostData('content')
-        ]);
+        $manager = $this->managers->getManagerOf('News');
+        if($request->checkMethod() === 'POST') {
+            $news = new News([
+                'author' => $request->getPostData('author'),
+                'title' => $request->getPostData('title'),
+                'content' => $request->getPostData('content')
+            ]);
 
-        if($request->isPostData('id')) {
-            $news->setID($request->getPostData('id'));
+            if($request->isGetData('id')) {
+                $news->setID($request->getGetData('id'));        
+            }
+            
+        } else {
+            if($request->isGetData('id')) {
+                $manager->getNews($request->getGetData('id'));
+            } else {
+                $news = new News();
+            }
         }
 
-        if($news->isValid()) {
+        $formbuilder = new NewsFormBuilder($news);
+        $formbuilder->build();
+        $form = $formbuilder->getForm();
+
+        if($request->checkMethod() === 'POST' && $form->isValid()) {
             $manager = $this->managers->getManagerOf('News');
-            $manager->saveNews($news);
+            $manager->save($news);
             $user = $this->app->getUser();
             $user->setFlash($news->isNew() ? 'Votre news a bien été ajoutée !' : "La news #{$news->getID()} a bien été modifiée !");
         } else {
             $this->page->addVar('errors', $news->getErrors());
         }
 
-        $this->page->addVar('news', $news);
+        $this->page->addVar('form', $form->createView());
     }
     
 }
